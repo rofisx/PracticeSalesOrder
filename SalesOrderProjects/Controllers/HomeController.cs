@@ -373,7 +373,41 @@ namespace SalesOrderProjects.Controllers
                         }
                     }
                     transaction.Commit();
-                    return Json(new { success = true, message = "Product added successfully!" });
+                    return Json(new { success = true, message = "Product Edited Successfully!" });
+                }
+                catch (Exception err)
+                {
+                    transaction.Rollback();
+                    return Json(new { success = false, message = err.Message.ToString() });
+                }
+            }
+        }
+
+        [HttpPost]
+        public JsonResult Delete(string TrsSO)
+        {           
+            connection();
+            con.Open();
+            string delTrsSO = "DELETE FROM [dbo].[TrsSalesOrder] WHERE TrsID = @TrsID";
+            string delTrsSODetail = "DELETE FROM [dbo].[TrsSalesOrderDetail] WHERE TrsID = @TrsID";           
+
+            using (SqlTransaction transaction = con.BeginTransaction())
+            {
+                try
+                {
+                    
+                    using (SqlCommand cmd = new SqlCommand(delTrsSODetail, con, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@TrsID", TrsSO);
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (SqlCommand cmd = new SqlCommand(delTrsSO, con, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@TrsID", TrsSO);
+                        cmd.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                    return Json(new { success = true, message = "Product Deleted Successfully!" });
                 }
                 catch (Exception err)
                 {
