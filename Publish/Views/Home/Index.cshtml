@@ -1,0 +1,241 @@
+﻿@model IEnumerable<SalesOrderProjects.Models.SalesOrder_Model>
+@{
+    ViewBag.Title = "Index";
+    int i = 0;
+    string date = DateTime.Now.ToString("yyyy-MM-dd");
+}
+<style>
+      .dataTables_wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        .pagination{
+            background-color:white;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            padding-left: 5px;
+        }
+        .bottom {
+            display: block;
+            align-items: center;
+            margin-top: 10px; 
+        }
+        .dt-paging {
+            margin-right: auto; 
+            margin-top: -25px;
+        }
+        .dt-info {
+            margin-left: auto; 
+            text-align: right;
+            margin-top: -15px;
+            margin-right: 10px; 
+        }
+</style>
+
+<div class="card bg-body border-blue-body mt-2">
+    <div class="card-body py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-2 m-auto">
+                    <label class="bg-body">Keywords</label>
+                </div>
+                <div class="col-4">                        
+                     <input type="text" class="form-control" id="keywordInput" aria-describedby="basic-addon3">
+                </div>
+                <div class="col-2 m-auto">
+                    <label class="bg-body">Order Date</label>
+                </div>
+                <div class="col-4">
+                    <input type="date" value="@date" class="form-control" id="orderDate" aria-describedby="basic-addon3">                   
+                </div>
+            </div>
+        </div>  
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-10">
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-dark-blue" id="btnSearch">Search</button>
+                </div>
+            </div>
+        </div>     
+    </div>
+</div>
+
+<div class="container my-3 px-0">
+    <div class="row">
+        <div class="col-6">
+            <button class="btn btn-sm btn-dark-red" id="addNewData"><a class="text-white" href="@Url.Action("Add", "Home")">Add New Data</a></button>
+            <button class="btn btn-sm btn-dark-excel" id="exportExcel">
+                <img width="25" height="25" src="https://img.icons8.com/fluency/48/ms-excel.png" alt="ms-excel" />
+                Export To Excel
+            </button>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 px-0">
+            <table id="table_trs" class="table table-striped table-bordered ">
+                <thead class="bg-dark-blue">
+                    <tr>
+                        <th scope="col" style="width:50px;">No</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Sales Order</th>
+                        <th scope="col">Order Date</th>
+                        <th scope="col">Customer</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white" id="tbody_trs">
+                    @*<tr>
+                        <td class="text-center">1</td>
+                        <td>
+                            <img class="" width="28" height="28"
+                                 src="https://img.icons8.com/color/48/create-new.png" alt="edit" />
+                            <img class="" width="28" height="28"
+                                 src="https://img.icons8.com/parakeet/48/trash.png" alt="delete" />
+                        </td>
+                        <td>SO_001</td>
+                        <td>24/09/2024</td>
+                        <td>TITAN</td>
+                    </tr>*@
+                   
+                    @foreach (var item in Model)
+                    {                        
+                        i++;
+                        <tr>
+                            <td class="text-center">@i</td>
+                            <td>
+                                <img class="td_btn_edit" width="28" height="28"
+                                     src="https://img.icons8.com/color/48/create-new.png" alt="edit" />
+                                <img class="td_btn_delete" width="28" height="28"
+                                     src="https://img.icons8.com/parakeet/48/trash.png" alt="delete" />
+                            </td>
+                            <td>@item.TrsSO</td>
+                            <td>@item.OrderDate</td>
+                            <td>@item.Customer</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        function createDataTable(){
+            return $('#table_trs').DataTable({
+                pageLength: 5,
+                dom: '<"top"f>t<"bottom"ip>', 
+                lengthMenu: false, 
+                language: {
+                    search: "Filter records:",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries"
+                },
+                "targets": 'no-sort',
+                "searching": false,
+                "bSort": false,
+                "order": []
+            });
+            $('#example_wrapper .dataTables_info').appendTo('.bottom');
+            $('#example_wrapper .dataTables_paginate').appendTo('.bottom');
+        }
+        $(document).ready(function () {
+            let table_so = createDataTable();
+
+            $(document).on("click", "#addNewData", function () {
+                $(".spinner_loading").removeClass("d-none").addClass("d-flex");
+            });
+
+            $(document).on("click", "#btnSearch", function () {
+                $(".spinner_loading").removeClass("d-none").addClass("d-flex");
+                $.ajax({
+                    url: '@Url.Action("GetTrsSalesOrder","Home")',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data:{
+                        Keyword: $("#keywordInput").val(),
+                        OrderDate: $("#orderDate").val()
+                    },
+                    success: function (res) {
+                        $(".spinner_loading").addClass("d-none").removeClass("d-flex");
+                        if (res.success) {
+                            let TrsSO = res.result.map(({TrsSO}) => TrsSO);
+                            let OrderDate = res.result.map(({OrderDate}) => OrderDate);
+                            let Customer = res.result.map(({Customer}) => Customer);
+                            let tr = '';
+                            for (let x = 0; x < TrsSO.length; x++) {
+                                tr += '<tr>'
+                                tr += '<td class="text-center">' + (x + 1) + '</td>'
+                                tr += '<td>'
+                                tr += '<img class="td_btn_edit" width="28" height="28"'
+                                tr += 'src="https://img.icons8.com/color/48/create-new.png" alt="edit" />'
+                                tr += '<img class="td_btn_delete" width="28" height="28"'
+                                tr += 'src="https://img.icons8.com/parakeet/48/trash.png" alt="delete" />'
+                                tr += '</td>'
+                                tr += '<td>' + TrsSO[x]+ '</td>'
+                                tr += '<td>' + OrderDate[x]+ '</td>'
+                                tr += '<td>' + Customer[x]+ '</td>'
+                                tr += '</tr>'
+                            }
+                            $('#table_trs').DataTable().destroy();
+                            $("#tbody_trs").empty().append(tr);
+                            table_so = createDataTable();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: res.message
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $(".spinner_loading").addClass("d-none").removeClass("d-flex");
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: error
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click','.td_btn_edit', function(){
+                $(".spinner_loading").removeClass("d-none").addClass("d-flex");
+                var $trbody = $("#tbody_trs");
+                let row = $(this).closest('tr').index();
+                let id = $trbody.find("tr:eq("+row+") td:eq(2)").text();
+                window.location.href = '@Url.Action("Edit","Home", new { TrsSO = "trsSO" })'.replace("trsSO",id);
+            });
+
+            $('#exportExcel').click(function() {
+                $(".spinner_loading").removeClass("d-none").addClass("d-flex");
+                let now = new Date();
+
+                let year = now.getFullYear();
+                let day = String(now.getDate()).padStart(2, '0'); 
+                let month = String(now.getMonth() + 1).padStart(2, '0');
+                let hours = String(now.getHours()).padStart(2, '0');
+                let minutes = String(now.getMinutes()).padStart(2, '0');
+                let seconds = String(now.getSeconds()).padStart(2, '0');
+                let formattedDateTime = `${year}${day}${month} ${hours}${minutes}${seconds}`;
+                
+                setTimeout(function(){
+                    table_so.page.len(-1).draw(); 
+                    $("#table_trs").table2excel({
+                        name: "Sales Order",
+                        filename: "SalesOrder" + formattedDateTime,
+                        fileext: ".xls"
+                    });
+                    table_so.page.len(5).draw(); 
+                    $(".spinner_loading").addClass("d-none").removeClass("d-flex");
+                },1000);
+                
+                
+            });
+        });
+    </script>
+}

@@ -1,0 +1,529 @@
+﻿@model SalesOrderProjects.Models.EditSalesOrder
+@using System.Globalization
+@{
+    ViewBag.Title = "EditSalesOrder";
+    string TrsSO = "", OrderDate = "",Address = "", CustomerId = "",TotalItem = "",TotalAmount = "";
+    decimal decQty = 0, decPrice = 0;
+    foreach(var i in Model.ListItemDetail)
+    {
+        decQty += i.qty;
+        decPrice += (i.qty * i.price);
+    }
+    TotalItem = decQty.ToString("0");
+    TotalAmount = decPrice.ToString("#,0.00", new CultureInfo("es-ES"));
+    TrsSO = Model.Trs_SO;
+    OrderDate = Model.OrderDate;
+    CustomerId = Model.CustomerId;
+    Address = Model.Address;
+}
+
+<div class="d-flex justify-content-center mt-2 py-2 bg-dark-blue">
+    <h5 class="font-weight-bolder">Sales Order Information</h5>
+    <img class="my-1 mx-2" width="20" height="20" src="~/Content/icon/arrow-down-white.png" alt="arrow-down" />
+</div>
+<div class="card bg-body mt-2" style="border:none;">
+    <div class="card-body py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-3 m-auto">
+                    <label class="bg-body required">Sales Order Number</label>
+                </div>
+                <div class="col-3">
+                    <input type="text" value="@TrsSO" class="form-control" id="sales_order" aria-describedby="basic-addon3" disabled>
+                </div>
+                <div class="col-2 m-auto">
+                    <label class="bg-body required">Customer</label>
+                </div>
+                <div class="col-4">
+                    <select class="form-control" id="select_customer">
+                       @foreach (var i in Model.ListCustomer)
+                       {
+                        <option value="@i.CustomerId" data-address="@i.Address">@i.CustomerName</option>
+                       }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-2">
+            <div class="row">
+                <div class="col-3 m-auto">
+                    <label class="bg-body required">Order Date</label>
+                </div>
+                <div class="col-3">
+                    <input type="date" value="@OrderDate" class="form-control" id="order_date" aria-describedby="basic-addon3">
+                </div>
+                <div class="col-2 m-auto">
+                    <label class="bg-body">Address</label>
+                </div>
+                <div class="col-4">
+                    <textarea class="form-control" cols="3" id="address_customer">@Address</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center mt-2 py-2 bg-dark-blue">
+    <h5 class="font-weight-bolder">Detail Item Information</h5>
+    <img class="my-1 mx-2" width="20" height="20" src="~/Content/icon/arrow-down-white.png" alt="arrow-down" />
+</div>
+
+<div class="container my-3 px-0">
+    <div class="row">
+        <div class="col-6">
+            <button id="btnAddItem" class="btn btn-sm btn-dark-red">Add Item</button>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 px-0">
+            <table id="table_addItem" class="table table-striped table-bordered mb-0">
+                <thead class="bg-dark-blue">
+                    <tr>
+                        <th scope="col" style="width:50px;">No</th>
+                        <th scope="col">ACTION</th>
+                        <th scope="col">ITEM NAME</th>
+                        <th scope="col">QTY</th>
+                        <th scope="col">PRICE</th>
+                        <th scope="col">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white" id="tbody_addItem">  
+                    @foreach (var i in Model.ListItemDetail)
+                    {
+                        <tr>
+                        <td class="text-center">1</td>
+                        <td>
+                            <img class="d-none td_btn_save" width="28" height="28" src="/Content/icon/save.png" alt="save" />
+                            <img class="td_btn_edit" width="28" height="28" src="/Content/icon/edit.png" alt="edit" />
+                            <img class="d-none td_btn_cancel" width="28" height="28" src="~/Content/icon/close.png" alt="close" />
+                            <img class="td_btn_delete" width="28" height="28" src="/Content/icon/trash.png" alt="delete" />
+                        </td>
+                        <td>
+                            <input type="text" value="@i.itemName" class="form-control itemName" placeholder="Barang" readonly/>
+                            <span class="d-none hideItemName">@i.itemName</span>
+                        </td>
+                        <td>
+                            <input type="number" value="@i.qty.ToString("0")" class="form-control qty" readonly/>
+                            <span class="d-none hideqty">@i.qty.ToString("0")</span>
+                        </td>
+                        <td>
+                            <input type="text" value="@i.price.ToString("#,0.00", new CultureInfo("es-ES"))" class="form-control price" readonly/>
+                            <span class="d-none hideprice">@i.price.ToString("#,0.00", new CultureInfo("es-ES"))</span>
+                        </td>
+                        <td>
+                            <input type="text" value="@((i.price * i.qty).ToString("#,0.00", new CultureInfo("es-ES")))" class="form-control subTotal" readonly/>
+                            <span class="d-none hidesubtotal">@((i.price * i.qty).ToString("#,0.00", new CultureInfo("es-ES")))</span>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <table class="table">
+                <tbody class="bg-white">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colspan="6" class="font-weight-bolder text-right"> 
+                        Total Item : <span id="td_totalItem">@TotalItem</span> 
+                        Total Amount : <span id="td_totalAmount">@TotalAmount</span> 
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-sm btn-dark-red mx-2" id="btnSubmitSave">Save</button>
+                <button class="btn btn-sm btn-dark-blue mx-2" id="btnClose"> <a class="text-white" href="@Url.Action("Index","Home")">Close</a></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("click", "#btnClose", function () {
+            $(".spinner_loading").removeClass("d-none").addClass("d-flex");
+        });
+        let trBody = '<tr>' +
+                       '<td class="text-center">1</td>' +
+                       '<td>' +
+                           '<img class="td_btn_save" width="28" height="28" src="/Content/icon/save.png" alt="save" />' +
+                           '<img class="d-none td_btn_edit" width="28" height="28" src="/Content/icon/edit.png" alt="edit" />' +
+                           '<img class="d-none td_btn_cancel" width="28" height="28" src="/Content/icon/close.png" alt="close" />'+
+                           '<img class="td_btn_delete" width="28" height="28" src="/Content/icon/trash.png" alt="delete" />' +
+                       '</td>' +
+                       '<td>' +
+                           '<input type="text" class="form-control itemName" placeholder="Barang" />' +
+                       '</td>' +
+                       '<td>' +
+                           '<input type="number" class="form-control qty" />' +
+                       '</td>' +
+                       '<td>' +
+                           '<input type="text" class="form-control price" />' +
+                       '</td>' +
+                       '<td>' +
+                           '<input type="text" value="0" class="form-control subTotal" readonly/>' +
+                       '</td>' +
+                   '</tr>';
+        configDetailTable();
+
+        $('#select_customer option').filter(function () {
+            return $(this).val() === '@Model.CustomerId';
+        }).prop('selected', true).trigger('change');
+
+        $('#select_customer').change(function () {
+            let selectedOption = $(this).find('option:selected');
+            let address = selectedOption.data('address');
+            $('#address_customer').val(address);
+        });
+
+        $("#btnAddItem").click(function () {
+            var $trbody = $("#tbody_addItem");
+
+            if ($trbody.find('tr').length > 0) {
+                let trisEmpty = true;
+                let arrtr = [];
+                $trbody.find('tr').each(function () {
+                    arrtr.push($(this).find('td input').val() !== '' ? 1 : 0);
+                });
+                const uniqueArrtr = [...new Set(arrtr)];
+                trisEmpty = uniqueArrtr.includes(0) ? true : false;
+
+                if (trisEmpty) {
+                    Swal.fire({
+                        title: "Warning",
+                        text: "can't add row, please complete your item first",
+                        icon: "info"
+                    });
+                }
+                else {
+                    $("#tbody_addItem").append(trBody);
+                    configDetailTable();
+                }
+            }
+            else {
+                $("#tbody_addItem").append(trBody);
+                configDetailTable();
+            }
+        });
+
+        $("#btnSubmitSave").click(function () {
+            if ($("#tbody_addItem tr").length <= 0) {
+                Swal.fire({
+                    title: 'Warning',
+                    text: "Please complete the input items",
+                    icon: "info"
+                });
+                return
+            }
+            let xsalesOrder = $("#sales_order").val();
+            let xorderDate = $("#order_date").val();
+            let xcustomerId = $("#select_customer option:selected").val();
+            let xaddress = $("#address_customer").val();
+
+            let itemDetail = [];
+            let icsaveVisible = [];
+            $("#tbody_addItem tr").each(function () {
+                let items = {
+                    itemName: $(this).find('.itemName').val(),
+                    qty: convertPriceDec($(this).find('.qty').val()),
+                    price: convertPriceDec($(this).find('.price').val())
+                }
+                let ic_save = $(this).find('.td_btn_save').hasClass('d-none') ? 1 : 0;
+                icsaveVisible.push(ic_save);
+                itemDetail.push(items);
+            });
+
+            const un_icsaveVisible = [...new Set(icsaveVisible)];
+            let is_icSaveVisible = un_icsaveVisible.includes(0) ? true : false;
+
+            const isDetailValid = itemDetail.every(item =>
+                item.itemName && item.itemName.trim() !== '' &&
+                item.qty !== null && item.qty !== undefined &&
+                item.price !== null && item.price !== undefined
+                );
+
+            if (xsalesOrder !== '' && xorderDate !== '' && xcustomerId !== '' && isDetailValid && !is_icSaveVisible) {
+                $(".spinner_loading").removeClass("d-none").addClass("d-flex");
+                $.ajax({
+                    url: '@Url.Action("Edit","Home")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        Trs_SO: xsalesOrder,
+                        OrderDate: xorderDate,
+                        CustomerId: xcustomerId,
+                        Address: xaddress,
+                        ItemDetails: itemDetail
+                    }),
+                    success: function (res) {
+                        $(".spinner_loading").addClass("d-none").removeClass("d-flex");
+                        if (res.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Your data has been saved",
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                            window.location.href = '@Url.Action("Index", "Home")';
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: res.message
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $(".spinner_loading").addClass("d-none").removeClass("d-flex");
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: error
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Warning',
+                    text: "Please complete the input items",
+                    icon: "info"
+                });
+            }
+        });
+
+        function configDetailTable() {
+            configPrice();
+            configQty();
+            config_tdSave();
+            config_tdCancel();
+            config_tdEdit();
+            config_tdDelete();
+        }
+        function config_tdSave() {
+            var $trbody = $("#tbody_addItem");
+            $(document).on('click', '.td_btn_save', function () {
+                let row = $(this).closest('tr').index();
+                let col = $(this).closest('td').index();
+                var $xitemName = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input');
+                var $xqty = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') input');
+                var $xprice = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 3) + ') input');
+                var $hideitemName = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') .hideItemName');
+                var $hideqty = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') .hideqty');
+                var $hideprice = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 3) + ') .hideprice');
+
+                var $td_cancel = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_cancel');
+                var $td_save = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_save');;
+                var $td_edit = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_edit');
+                var $td_delete = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_delete');
+
+                if ($xitemName.val() !== '' && $xqty.val() !== '' && $xprice.val() !== '') {
+                    $xitemName.attr('readonly', true);
+                    $xqty.attr('readonly', true);
+                    $xprice.attr('readonly', true);
+                    $td_save.addClass('d-none');
+                    $td_cancel.addClass('d-none');
+                    $td_edit.removeClass('d-none');
+                    $td_delete.removeClass('d-none');
+
+                    let sumQty = 0;
+                    let sumPrice = 0;
+                    $trbody.find('tr').each(function () {
+                        let totQty = parseInt($(this).find('td:eq(' + (col + 2) + ') input').val()) || 0;
+                        let totPrice = convertPriceDec($(this).find('td:eq(' + (col + 4) + ') input').val()) || 0;
+                        sumQty += totQty;
+                        sumPrice += totPrice;
+                    });
+                    $("#td_totalItem").text(sumQty);
+                    $("#td_totalAmount").text(convertThousand(sumPrice));
+
+                    $hideitemName.text($xitemName.val());
+                    $hideqty.text($xqty.val());
+                    $hideprice.text($xprice.val());
+
+                    $("#tbody_addItem").append(trBody);
+                    configPrice();
+                    configQty();
+                    config_tdEdit();
+                    config_tdDelete();
+                    $trbody.find('tr:eq(' + (row + 1) + ') td:eq(' + (col + 1) + ') input').focus();
+                } else {
+                    Swal.fire({
+                        title: 'Warning',
+                        text: "Item is Incomplete !",
+                        icon: "info"
+                    });
+                }
+            });
+        }
+
+        function config_tdDelete() {
+            var $trbody = $("#tbody_addItem");
+            $(document).on('click', '.td_btn_delete', function () {
+                $(this).closest('tr').remove();
+                let row = $(this).closest('tr').index();
+                let col = $(this).closest('td').index();
+                let sumQty = 0;
+                let sumPrice = 0;
+                var $trbody = $("#tbody_addItem");
+                if ($trbody.find('tr').length > 0) {
+                    $trbody.find('tr').each(function () {
+                        let totQty = parseInt($(this).find('td:eq(' + (col + 2) + ') input').val()) || 0;
+                        let totPrice = convertPriceDec($(this).find('td:eq(' + (col + 4) + ') input').val()) || 0;
+                        sumQty += totQty;
+                        sumPrice += totPrice;
+                    });
+                    $("#td_totalItem").text(sumQty);
+                    $("#td_totalAmount").text(convertThousand(sumPrice));
+                } else {
+                    $("#td_totalItem").text('0');
+                    $("#td_totalAmount").text('0,00');
+                }
+
+            });
+        }
+
+        function config_tdEdit() {
+            var $trbody = $("#tbody_addItem");
+            $(document).on('click', '.td_btn_edit', function () {
+                let row = $(this).closest('tr').index();
+                let col = $(this).closest('td').index();
+                var $xitemName = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input');
+                var $xqty = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') input');
+                var $xprice = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 3) + ') input');
+               
+                var $td_save = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_save');
+                var $td_cancel = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_cancel');
+                var $td_edit = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_edit');
+                var $td_delete = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_delete');
+                $xitemName.removeAttr('readonly');
+                $xqty.removeAttr('readonly');
+                $xprice.removeAttr('readonly');
+                $td_save.removeClass('d-none');
+                $td_cancel.removeClass('d-none');
+                $td_edit.addClass('d-none');
+                $td_delete.addClass('d-none');
+            });
+        }
+
+        function configPrice() {
+            var $trbody = $("#tbody_addItem");
+            $('.price').each(function () {
+                if (!AutoNumeric.getAutoNumericElement(this)) {
+                    new AutoNumeric(this, {
+                        digitGroupSeparator: '.',
+                        decimalCharacter: ',',
+                        decimalPlaces: 2,
+                        minimumValue: '0',
+                        maximumValue: '9999999999.99',
+                        decimalCharacterAlternative: '.',
+                        unformatOnSubmit: true
+                    });
+                }
+            });
+            $(".price").on('keyup', function () {
+                let price = $(this).val() !== '' ? convertPrice($(this).val()) : 0;
+                let row = $(this).closest('tr').index();
+                let col = $(this).closest('td').index();
+                let qty = $trbody.find('tr:eq(' + row + ') td:eq(' + (col - 1) + ') input').val() !== ''
+                         ? parseInt($trbody.find('tr:eq(' + row + ') td:eq(' + (col - 1) + ') input').val()) : 0;
+                if (qty > 0 && price > 0) {
+                    $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input').val(subtotal(qty, price));
+                } else {
+                    $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input').val('0,00');
+                }
+            });
+            $(".price").on('focus', function () {
+                let currentValue = $(this).val();
+                let numericValue = currentValue.split(',')[0];
+                $(this).val(numericValue);;
+            });
+        }
+
+        function configQty() {
+            var $trbody = $("#tbody_addItem");
+            $(".qty").on('keyup', function () {
+                let qty = $(this).val() !== '' ? parseInt($(this).val()) : 0;
+                let row = $(this).closest('tr').index();
+                let col = $(this).closest('td').index();;
+                let price = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input').val() !== ''
+                    ? convertPriceDec($trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input').val()) : 0;
+
+                if (qty > 0 && price > 0) {
+                    $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') input').val(subtotalWithDec(qty, price));
+                } else {
+                    $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') input').val('0,00');
+                }
+            });
+        }
+
+        function config_tdCancel() {
+            $(".td_btn_cancel").click(function () {
+                let row = $(this).closest('tr').index();
+                let col = $(this).closest('td').index();
+                var $trbody = $("#tbody_addItem");
+                var $xitemName = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') input');
+                var $xqty = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') input');
+                var $xprice = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 3) + ') input');
+                var $hideitemName = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 1) + ') .hideItemName');
+                var $hideqty = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 2) + ') .hideqty');
+                var $hideprice = $trbody.find('tr:eq(' + row + ') td:eq(' + (col + 3) + ') .hideprice');
+
+                var $td_save = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_save');
+                var $td_cancel = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_cancel');
+                var $td_edit = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_edit');
+                var $td_delete = $trbody.find('tr:eq(' + row + ') td:eq(' + col + ') .td_btn_delete');
+                
+                $xitemName.attr('readonly', true).val($hideitemName.text());
+                $xqty.attr('readonly', true).val($hideqty.text());
+                $xprice.attr('readonly', true).val($hideprice.text());
+                $td_save.addClass('d-none');
+                $td_cancel.addClass('d-none');
+                $td_edit.removeClass('d-none');
+                $td_delete.removeClass('d-none');
+            });
+        }
+
+        function subtotalWithDec(xqty, price) {
+            let xprice = isNumber(price) ? price : convertPriceDec(price);
+            let xsubtotal = convertThousand(xqty * xprice);
+            return xsubtotal;
+        }
+        function subtotal(xqty, price) {
+            let xprice = isNumber(price) ? price : convertPrice(price);
+            let xsubtotal = convertThousand(xqty * xprice);
+            return xsubtotal;
+        }
+        function convertThousand(number) {
+            return number.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function convertPriceDec(formattedNumber) {
+            let cleanedNumber = formattedNumber.replace(/\./g, '').replace(',', '.');
+            let number = parseFloat(cleanedNumber);
+            return number;
+        }
+        function convertPrice(formattedNumber) {
+            let numericString = formattedNumber.replace(/\./g, '');
+            let number = parseInt(numericString, 10);
+            return number;
+        }
+        function isNumber(value) {
+            return typeof value === 'number' && !Number.isNaN(value);
+        }
+    });
+    </script>
+}
+
+

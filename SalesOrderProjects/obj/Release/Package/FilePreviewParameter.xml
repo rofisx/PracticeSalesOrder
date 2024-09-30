@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="Default Web Site/PracticeSalesOrder" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\Lamaran\\PT\ Profescipta\ Wahana\ Teknik\\Technical\ Test\\SalesOrderProjects\\SalesOrderProjects\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\Lamaran\\PT\ Profescipta\ Wahana\ Teknik\\Technical\ Test\\SalesOrderProjects\\SalesOrderProjects\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="connectionkey-Web.config Connection String" description="connectionkey Connection String used in web.config by the application to access the database." value="Data Source=localhost\SQLEXPRESS2019;Integrated Security=true;Initial Catalog=PracticeSalesOrder" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Lamaran\\PT\ Profescipta\ Wahana\ Teknik\\Technical\ Test\\SalesOrderProjects\\SalesOrderProjects\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='connectionkey']/@connectionString" />
+  </parameter>
+</parameters>

@@ -1,0 +1,120 @@
+﻿body {
+    padding-bottom: 20px;
+    background:#79A5D2 !important;
+}
+
+.spinner_loading{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: none;
+}
+.spinner-border{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+div.swal2-container div.swal2-popup {
+    width: 25em;
+}
+div.swal2-icon.swal2-info {
+    border-color: red;
+    color: red;
+}
+
+div.swal2-container button.swal2-styled.swal2-confirm {
+    border: 0;
+    border-radius: .25em;
+    background: initial;
+    background-color: #002A5C;
+    color: #fff;
+    font-size: 1em;
+}
+
+.arrow-down::after {
+    content:'';
+    background-image: url('/Content/icon/arrow-down-white.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: auto;
+    height:50px;
+    margin-left: 8px; 
+}
+
+img{
+    cursor:pointer;
+}
+
+.required::after {
+    content: '*'; 
+    color: red; 
+    margin-left: 4px;
+}
+
+a{
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:none !important;
+}
+
+.border-blue-body{
+    border: 1.5px solid #1E2935 !important;
+    border-radius: 10px !important;
+}
+
+.btn-dark-blue{
+    background-color : #002A5C !important;
+    border-radius: 8px !important;
+    padding-right:1.6em !important;
+    padding-left:1.6em !important;
+    padding-top: 0;
+    padding-bottom:0;
+    color: white !important;
+}
+.btn-dark-red{
+    background-color : #880743 !important;
+    border-radius: 8px !important;
+    padding-right:1.6em !important;
+    padding-left:1.6em !important;
+    padding-top: 0;
+    padding-bottom:0;
+    color: white !important;
+}
+.btn-dark-excel{
+    background-color : #004165 !important;
+    border-radius: 8px !important;
+    padding-right:1.6em !important;
+    padding-left:1.6em !important;
+    padding-top: 0;
+    padding-bottom:0;
+    color: white !important;
+}
+.bg-dark-blue {
+    background-color: #002A5C !important;
+    color: white !important;
+}
+.bg-body{
+    background-color:#79A5D2 !important;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
